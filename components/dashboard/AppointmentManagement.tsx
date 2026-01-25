@@ -1,24 +1,36 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, Pencil, XCircle, CalendarDays, User, Clock, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Plus, Pencil, XCircle, CalendarDays, User, Clock, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Staff, Service, Appointment, AppointmentStatus, CreateAppointmentInput } from "@/types";
+import { Staff, Service, Appointment, AppointmentStatus } from "@/types";
 import { createAppointment, updateAppointment, deleteAppointment } from "@/app/actions/appointments";
 import { getServices } from "@/app/actions/services";
-import { addToQueue } from "@/app/actions/queue";
 import { cn } from "@/lib/utils";
 import { format, isSameDay, addMinutes, parseISO, isWithinInterval } from "date-fns";
+import { useRouter } from "next/navigation";
+
+const appointmentSchema = z.object({
+    customerName: z.string().min(2, "Customer name must be at least 2 characters"),
+    serviceId: z.string().min(1, "Please select a service"),
+    staffId: z.string().nullable().optional(),
+    appointmentDate: z.string().min(1, "Please select a date and time"),
+});
+
+type AppointmentFormValues = z.infer<typeof appointmentSchema>;
 
 interface AppointmentManagementProps {
     appointments: Appointment[];
     staffs: Staff[];
-    onRefresh: () => void;
 }
 
-export function AppointmentManagement({ appointments, staffs, onRefresh }: AppointmentManagementProps) {
+export function AppointmentManagement({ appointments, staffs }: AppointmentManagementProps) {
+    const router = useRouter();
     const [services, setServices] = useState<Service[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState<Appointment | null>(null);
@@ -26,15 +38,28 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
     const [filterDate, setFilterDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [filterStaff, setFilterStaff] = useState<string>("all");
 
-    const [formData, setFormData] = useState<CreateAppointmentInput>({
-        customerName: "",
-        serviceId: "",
-        staffId: "",
-        appointmentDate: new Date().toISOString().slice(0, 16),
-    });
-
     const [conflictError, setConflictError] = useState<string | null>(null);
     const [capacityWarning, setCapacityWarning] = useState<string | null>(null);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        formState: { errors },
+    } = useForm<AppointmentFormValues>({
+        resolver: zodResolver(appointmentSchema),
+        defaultValues: {
+            customerName: "",
+            serviceId: "",
+            staffId: "",
+            appointmentDate: new Date().toISOString().slice(0, 16),
+        },
+    });
+
+    const watchedServiceId = watch("serviceId");
+    const watchedStaffId = watch("staffId");
+    const watchedDate = watch("appointmentDate");
 
     useEffect(() => {
         getServices().then(setServices);
@@ -44,17 +69,16 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
         setConflictError(null);
         setCapacityWarning(null);
 
-        if (!formData.serviceId || !formData.appointmentDate) return;
+        if (!watchedServiceId || !watchedDate) return;
 
-        const selectedService = services.find(s => s.id === formData.serviceId);
+        const selectedService = services.find(s => s.id === watchedServiceId);
         if (!selectedService) return;
 
-        const startTime = parseISO(formData.appointmentDate);
+        const startTime = parseISO(watchedDate);
         const endTime = addMinutes(startTime, selectedService.durationMinutes);
 
-        // 1. Check Daily Capacity for Staff
-        if (formData.staffId) {
-            const staff = staffs.find(s => s.id === formData.staffId);
+        if (watchedStaffId) {
+            const staff = staffs.find(s => s.id === watchedStaffId);
             if (staff) {
                 const todayCount = appointments.filter(a =>
                     a.staffId === staff.id &&
@@ -68,9 +92,8 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
                 }
             }
 
-            // 2. Check Overlapping Appointments
             const hasOverlap = appointments.some(a => {
-                if (a.staffId !== formData.staffId || a.status === AppointmentStatus.CANCELLED || a.id === isEditing?.id) return false;
+                if (a.staffId !== watchedStaffId || a.status === AppointmentStatus.CANCELLED || a.id === isEditing?.id) return false;
 
                 const aStart = parseISO(a.appointmentDate);
                 const aService = services.find(s => s.id === a.serviceId);
@@ -91,22 +114,19 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
 
     useEffect(() => {
         checkConflicts();
-    }, [formData.staffId, formData.serviceId, formData.appointmentDate]);
+    }, [watchedStaffId, watchedServiceId, watchedDate, services, appointments]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = async (data: AppointmentFormValues) => {
         if (conflictError) return;
 
         setIsSubmitting(true);
         try {
             if (isEditing) {
-                await updateAppointment(isEditing.id, formData);
+                await updateAppointment(isEditing.id, data as any);
             } else {
-                const result = await createAppointment(formData);
-                // If no staff assigned, backend usually puts in queue, but we check if we should explicitly add to queue item if needed
-                // Assuming backend handles the AUTO-QUEUE if staffId is null/empty
+                await createAppointment(data as any);
             }
-            onRefresh();
+            router.refresh();
             handleClose();
         } catch (error) {
             console.error("Error saving appointment:", error);
@@ -116,20 +136,20 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
     };
 
     const handleEdit = (appointment: Appointment) => {
-        setFormData({
+        setIsEditing(appointment);
+        reset({
             customerName: appointment.customerName,
             serviceId: appointment.serviceId,
             staffId: appointment.staffId || "",
             appointmentDate: new Date(appointment.appointmentDate).toISOString().slice(0, 16),
         });
-        setIsEditing(appointment);
         setIsAdding(true);
     };
 
     const handleStatusUpdate = async (id: string, status: AppointmentStatus) => {
         try {
             await updateAppointment(id, { status } as any);
-            onRefresh();
+            router.refresh();
         } catch (error) {
             console.error("Error updating status:", error);
         }
@@ -138,7 +158,12 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
     const handleClose = () => {
         setIsAdding(false);
         setIsEditing(null);
-        setFormData({ customerName: "", serviceId: "", staffId: "", appointmentDate: new Date().toISOString().slice(0, 16) });
+        reset({
+            customerName: "",
+            serviceId: "",
+            staffId: "",
+            appointmentDate: new Date().toISOString().slice(0, 16),
+        });
         setConflictError(null);
         setCapacityWarning(null);
     };
@@ -179,15 +204,15 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl p-8 animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
                         <h3 className="text-xl font-bold mb-6">{isEditing ? "Modify Appointment" : "New Appointment"}</h3>
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                             <div className="space-y-2">
                                 <Label>Customer Name</Label>
                                 <Input
-                                    value={formData.customerName}
-                                    onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+                                    {...register("customerName")}
                                     placeholder="e.g. Alice Smith"
-                                    required
+                                    className={errors.customerName ? "border-destructive" : ""}
                                 />
+                                {errors.customerName && <p className="text-xs text-destructive">{errors.customerName.message}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -195,24 +220,22 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
                                     <Label>Service</Label>
                                     <select
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                        value={formData.serviceId}
-                                        onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
-                                        required
+                                        {...register("serviceId")}
                                     >
                                         <option value="">Select Service</option>
                                         {services.map(s => (
                                             <option key={s.id} value={s.id}>{s.name} ({s.durationMinutes}m)</option>
                                         ))}
                                     </select>
+                                    {errors.serviceId && <p className="text-xs text-destructive">{errors.serviceId.message}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Date & Time</Label>
                                     <Input
                                         type="datetime-local"
-                                        value={formData.appointmentDate}
-                                        onChange={(e) => setFormData({ ...formData, appointmentDate: e.target.value })}
-                                        required
+                                        {...register("appointmentDate")}
                                     />
+                                    {errors.appointmentDate && <p className="text-xs text-destructive">{errors.appointmentDate.message}</p>}
                                 </div>
                             </div>
 
@@ -220,20 +243,18 @@ export function AppointmentManagement({ appointments, staffs, onRefresh }: Appoi
                                 <Label>Assign Staff (Optional)</Label>
                                 <select
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                    value={formData.staffId || ""}
-                                    onChange={(e) => setFormData({ ...formData, staffId: e.target.value || null })}
+                                    {...register("staffId")}
                                 >
                                     <option value="">Unassigned (Send to Queue)</option>
                                     {staffs.map(s => (
                                         <option key={s.id} value={s.id}>{s.name} - {s.staffType}</option>
                                     ))}
                                 </select>
-
                             </div>
 
                             {conflictError && (
                                 <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-lg flex items-center gap-2 text-destructive text-sm font-medium">
-                                    <AlertTriangle className="w-4 h-4" />
+                                    <AlertCircle className="w-4 h-4" />
                                     {conflictError}
                                 </div>
                             )}

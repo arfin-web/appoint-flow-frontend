@@ -1,22 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { ListOrdered, UserCheck, Trash2, Clock, Calendar, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Queue, Staff, Appointment, AppointmentStatus } from "@/types";
 import { removeFromQueue } from "@/app/actions/queue";
 import { updateAppointment } from "@/app/actions/appointments";
 import { format, parseISO, isSameDay, addMinutes, isWithinInterval } from "date-fns";
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface WaitingQueueProps {
     queue: Queue[];
     staffs: Staff[];
     appointments: Appointment[];
-    onRefresh: () => void;
 }
 
-export function WaitingQueue({ queue, staffs, appointments, onRefresh }: WaitingQueueProps) {
+export function WaitingQueue({ queue, staffs, appointments }: WaitingQueueProps) {
+    const router = useRouter();
     const [isAssigning, setIsAssigning] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -32,16 +32,13 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
 
         setIsAssigning(true);
         try {
-            // Logic for automatic assignment:
-            // 1. Get the first item in queue
-            const nextInQueue = queue.sort((a, b) => a.position - b.position)[0];
+            const nextInQueue = [...queue].sort((a, b) => a.position - b.position)[0];
             const appointment = nextInQueue.appointment;
 
             if (!appointment || !appointment.service) {
                 throw new Error("Invalid appointment data in queue");
             }
 
-            // 2. Find eligible staff
             const eligibleStaffs = staffs.filter(s =>
                 s.status === "AVAILABLE" &&
                 s.staffType === appointment.service?.requiredStaffType
@@ -53,12 +50,10 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
                 return;
             }
 
-            // 3. Find staff with capacity and no conflicts
             const appStart = parseISO(appointment.appointmentDate);
             const appEnd = addMinutes(appStart, appointment.service.durationMinutes);
 
             const availableStaff = eligibleStaffs.find(staff => {
-                // Daily capacity check
                 const todayCount = appointments.filter(a =>
                     a.staffId === staff.id &&
                     isSameDay(parseISO(a.appointmentDate), appStart) &&
@@ -67,7 +62,6 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
 
                 if (todayCount >= staff.dailyCapacity) return false;
 
-                // Conflict check
                 const hasConflict = appointments.some(a => {
                     if (a.staffId !== staff.id || a.status === AppointmentStatus.CANCELLED) return false;
                     const aStart = parseISO(a.appointmentDate);
@@ -88,7 +82,6 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
                 return;
             }
 
-            // 4. Assign and remove from queue
             await updateAppointment(appointment.id, {
                 staffId: availableStaff.id,
                 status: AppointmentStatus.SCHEDULED
@@ -96,7 +89,7 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
 
             await removeFromQueue(nextInQueue.id);
 
-            onRefresh();
+            router.refresh();
         } catch (error: any) {
             console.error("Assignment error:", error);
             setErrorMessage(error.message || "Failed to assign appointment");
@@ -143,8 +136,8 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
                     {sortedQueue.map((item, index) => (
                         <div key={item.id} className="bg-card border border-border p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-md transition-all">
                             <div className="flex items-center gap-6 w-full sm:w-auto">
-                                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex flex-col items-center justify-center text-primary shrink-0">
-                                    <span className="text-xs font-bold uppercase">Pos</span>
+                                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex flex-col items-center justify-center text-primary shrink-0 text-center">
+                                    <span className="text-[10px] font-bold uppercase leading-tight">Pos</span>
                                     <span className="text-xl font-black">{getOrdinal(index + 1)}</span>
                                 </div>
                                 <div className="space-y-1">
@@ -171,7 +164,7 @@ export function WaitingQueue({ queue, staffs, appointments, onRefresh }: Waiting
                                     onClick={async () => {
                                         if (confirm("Remove this customer from the queue?")) {
                                             await removeFromQueue(item.id);
-                                            onRefresh();
+                                            router.refresh();
                                         }
                                     }}
                                     className="p-2 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full transition-colors"
