@@ -4,9 +4,11 @@ import { usePathname } from "next/navigation";
 import { Bell, Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { UserButton, useUser } from '@clerk/nextjs'
 
 export function Topbar() {
     const pathname = usePathname();
+    const { user } = useUser();
 
     const getBreadcrumb = () => {
         const parts = pathname.split('/').filter(Boolean);
@@ -35,11 +37,15 @@ export function Topbar() {
                 <div className="h-8 w-px bg-border mx-2" />
                 <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                        <p className="text-sm font-bold">Admin User</p>
+                        <p className="text-sm font-bold">{user?.fullName}</p>
                         <p className="text-[10px] text-muted-foreground uppercase font-medium">Workspace Owner</p>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                        <User className="w-6 h-6" />
+                        {
+                            user && (
+                                <UserButton />
+                            )
+                        }
                     </div>
                 </div>
             </div>

@@ -12,7 +12,6 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
-    LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -72,16 +71,6 @@ export function Sidebar() {
                     )
                 })}
             </nav>
-
-            <div className="p-4 border-t border-border mt-auto">
-                <Button
-                    variant="ghost"
-                    className={cn("w-full justify-start gap-3 px-3 py-6 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors")}
-                >
-                    <LogOut className="w-5 h-5" />
-                    {!isCollapsed && <span>Logout</span>}
-                </Button>
-            </div>
 
             {/* Collapse Toggle */}
             <button
