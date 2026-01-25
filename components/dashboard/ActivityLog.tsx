@@ -1,9 +1,7 @@
 "use client";
 
-import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ListRestart, Clock } from "lucide-react";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ActivityLog as ActivityLogType } from "@/types";
 
 interface ActivityLogProps {

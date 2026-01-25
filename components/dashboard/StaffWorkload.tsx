@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-import { Progress } from "@radix-ui/react-progress";
 import { Users, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Staff, Appointment } from "@/types";
 import { cn } from "@/lib/utils";

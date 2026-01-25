@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { usePathname } from "next/navigation";
 import { Bell, Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";

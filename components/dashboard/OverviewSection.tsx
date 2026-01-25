@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { OverviewStats } from "./OverviewStats";
 import { StaffWorkload } from "./StaffWorkload";
 import { ActivityLog } from "./ActivityLog";
