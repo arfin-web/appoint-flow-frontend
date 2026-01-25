@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -14,7 +14,6 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
     { id: "overview", label: "Overview", icon: <LayoutDashboard className="w-5 h-5" />, href: "/dashboard" },
@@ -25,7 +24,7 @@ const navItems = [
 ];
 
 export function Sidebar() {
-    const [isCollapsed, setIsCollapsed] = React.useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const pathname = usePathname();
 
     return (
@@ -35,14 +34,16 @@ export function Sidebar() {
                 isCollapsed ? "w-20" : "w-64"
             )}
         >
-            <div className="p-6 flex items-center gap-3">
-                <div className="bg-primary p-2 rounded-lg shrink-0">
-                    <Calendar className="w-6 h-6 text-primary-foreground" />
+            <Link href="/">
+                <div className="p-6 flex items-center gap-3">
+                    <div className="bg-primary p-2 rounded-lg shrink-0">
+                        <Calendar className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    {!isCollapsed && (
+                        <span className="text-xl font-bold tracking-tight truncate">AppointFlow</span>
+                    )}
                 </div>
-                {!isCollapsed && (
-                    <span className="text-xl font-bold tracking-tight truncate">AppointFlow</span>
-                )}
-            </div>
+            </Link>
 
             <nav className="flex-1 px-4 py-4 space-y-2">
                 {navItems.map((item) => {

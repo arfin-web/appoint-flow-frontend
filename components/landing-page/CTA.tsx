@@ -1,6 +1,11 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { ArrowRight, Phone } from "lucide-react";
+import Link from "next/link";
 
 export function CTA() {
     return (
@@ -16,13 +21,21 @@ export function CTA() {
                     Join thousands of businesses already using AppointFlow to manage their staff and customer queues with ease.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Button size="lg" className="h-14 px-10 rounded-full text-lg group">
-                        Get Started Now
-                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                    <Button variant="outline" size="lg" className="h-14 px-10 rounded-full text-lg">
-                        Talk to Sales
-                    </Button>
+                    <Link href="/sign-in">
+                        <Button size="lg" className="h-14 px-10 rounded-full text-lg group">
+                            Get Started Now
+                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                    </Link>
+                    <Tooltip>
+                        <TooltipTrigger type="button" className="flex items-center gap-2 h-12 px-8 border border-primary/20 rounded-full text-base w-full sm:w-auto">
+                            <Phone className="w-5 h-5" />
+                            Talk to Sales
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Coming soon</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </div>
         </section>

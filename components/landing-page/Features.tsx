@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Zap, Bell, Clock, ShieldCheck, BarChart3 } from "lucide-react";
 

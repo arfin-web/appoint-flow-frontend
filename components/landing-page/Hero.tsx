@@ -1,8 +1,13 @@
 "use client";
 
-import React from "react";
 import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { ArrowRight, Play, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export function Hero() {
     return (
@@ -31,14 +36,21 @@ export function Hero() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                        <Button size="lg" className="h-12 px-8 rounded-full text-base group w-full sm:w-auto">
-                            Start Free Trial
-                            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                        <Button variant="outline" size="lg" className="h-12 px-8 rounded-full text-base w-full sm:w-auto">
-                            <Play className="mr-2 w-4 h-4 fill-current" />
-                            Watch Demo
-                        </Button>
+                        <Link href="/sign-in">
+                            <Button size="lg" className="h-12 px-8 rounded-full text-base group w-full sm:w-auto">
+                                Start Free Trial
+                                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                        <Tooltip>
+                            <TooltipTrigger type="button" className="flex items-center gap-2 h-12 px-8 border border-primary/20 rounded-full text-base w-full sm:w-auto">
+                                <Play className="mr-2 w-4 h-4 fill-current" />
+                                Watch Demo
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Coming Soon</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
 
                     <div className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm text-muted-foreground">

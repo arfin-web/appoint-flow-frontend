@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Staff } from "@/types";
-import { createStaff, updateStaff, deleteStaff } from "@/app/actions/staff";
+import { deleteStaff } from "@/app/actions/staff";
 import { useRouter } from "next/navigation";
 import { StaffForm } from "./forms/StaffForm";
 import { StaffCard } from "./StaffCard";
@@ -17,25 +17,6 @@ export function StaffManagement({ staffs }: StaffManagementProps) {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState<Staff | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const onSubmit = async (data: any) => {
-        setIsSubmitting(true);
-        try {
-            if (isEditing) {
-                await updateStaff(isEditing.id, data);
-            } else {
-                await createStaff(data);
-            }
-            router.refresh();
-            handleClose();
-        } catch (error) {
-            console.error("Error saving staff:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     const handleEdit = (staff: Staff) => {
         setIsEditing(staff);
         setIsAdding(true);
@@ -70,9 +51,8 @@ export function StaffManagement({ staffs }: StaffManagementProps) {
             {isAdding && (
                 <StaffForm
                     initialData={isEditing}
-                    onSubmit={onSubmit}
+                    onSuccess={handleClose}
                     onCancel={handleClose}
-                    isSubmitting={isSubmitting}
                 />
             )}
 

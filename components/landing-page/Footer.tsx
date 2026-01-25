@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { Calendar, Github, Twitter, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";

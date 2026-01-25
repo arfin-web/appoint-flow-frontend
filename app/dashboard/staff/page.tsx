@@ -1,9 +1,6 @@
 import { StaffManagement } from "@/components/dashboard/StaffManagement";
 import { getStaffs } from "@/app/actions/staff";
 
-// Note: StaffManagement will need to be made a client component or wrapped
-// I will keep it as it is for now and see if it works as a client component imported here
-
 export default async function StaffPage() {
     const staffs = await getStaffs();
 

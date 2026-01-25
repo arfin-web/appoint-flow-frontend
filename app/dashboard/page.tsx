@@ -1,4 +1,3 @@
-import React from "react";
 import { OverviewSection } from "@/components/dashboard/OverviewSection";
 import { getStaffs } from "@/app/actions/staff";
 import { getAppointments } from "@/app/actions/appointments";

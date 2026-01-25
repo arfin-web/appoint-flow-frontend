@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/types";
-import { createService, updateService, deleteService } from "@/app/actions/services";
+import { deleteService } from "@/app/actions/services";
 import { useRouter } from "next/navigation";
 import { ServiceForm } from "./forms/ServiceForm";
 import { ServiceCard } from "./ServiceCard";
@@ -17,25 +17,6 @@ export function ServiceManagement({ services }: ServiceManagementProps) {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState<Service | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const onSubmit = async (data: any) => {
-        setIsSubmitting(true);
-        try {
-            if (isEditing) {
-                await updateService(isEditing.id, data);
-            } else {
-                await createService(data);
-            }
-            router.refresh();
-            handleClose();
-        } catch (error) {
-            console.error("Error saving service:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     const handleEdit = (service: Service) => {
         setIsEditing(service);
         setIsAdding(true);
@@ -70,9 +51,8 @@ export function ServiceManagement({ services }: ServiceManagementProps) {
             {isAdding && (
                 <ServiceForm
                     initialData={isEditing}
-                    onSubmit={onSubmit}
+                    onSuccess={handleClose}
                     onCancel={handleClose}
-                    isSubmitting={isSubmitting}
                 />
             )}
 

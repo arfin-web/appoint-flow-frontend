@@ -37,8 +37,8 @@ export async function Navbar({ isLanding = true }: NavbarProps) {
               <Link href="#how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
                 How it Works
               </Link>
-              <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
-                Pricing
+              <Link href="#testimonials" className="text-sm font-medium hover:text-primary transition-colors">
+                Testimonials
               </Link>
             </div>
           ) : null}

@@ -20,31 +20,12 @@ export function AppointmentManagement({ appointments, staffs }: AppointmentManag
     const [services, setServices] = useState<Service[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState<Appointment | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [filterDate, setFilterDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [filterStaff, setFilterStaff] = useState<string>("all");
 
     useEffect(() => {
         getServices().then(setServices);
     }, []);
-
-    const onSubmit = async (data: any) => {
-        setIsSubmitting(true);
-        try {
-            if (isEditing) {
-                await updateAppointment(isEditing.id, data);
-            } else {
-                const { createAppointment } = await import("@/app/actions/appointments");
-                await createAppointment(data);
-            }
-            router.refresh();
-            handleClose();
-        } catch (error) {
-            console.error("Error saving appointment:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
 
     const handleEdit = (appointment: Appointment) => {
         setIsEditing(appointment);
@@ -88,9 +69,8 @@ export function AppointmentManagement({ appointments, staffs }: AppointmentManag
                     staffs={staffs}
                     services={services}
                     appointments={appointments}
-                    onSubmit={onSubmit}
+                    onSuccess={handleClose}
                     onCancel={handleClose}
-                    isSubmitting={isSubmitting}
                 />
             )}
 
