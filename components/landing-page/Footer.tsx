@@ -54,14 +54,14 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold mb-6">Stay Updated</h4>
                         <p className="text-sm text-muted-foreground mb-4">Subscribe to our newsletter for latest updates.</p>
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-2">
                             <input
                                 type="email"
                                 placeholder="email@example.com"
                                 className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                             />
-                            <Button size="sm">
-                                <Mail className="w-4 h-4" />
+                            <Button>
+                                <Mail className="w-6 h-6" />
                             </Button>
                         </div>
                     </div>

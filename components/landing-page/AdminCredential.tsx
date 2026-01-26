@@ -2,7 +2,7 @@
 
 import { KeyRound, User, Copy } from 'lucide-react'
 
-const AdminCredential = () => {
+export function AdminCredential() {
     return (
         <div className="max-w-md w-full animate-in fade-in slide-in-from-right-8 duration-700 delay-100">
             <div className="bg-card/50 backdrop-blur-md border border-primary/20 rounded-3xl p-8 shadow-2xl relative group overflow-hidden">
@@ -66,5 +66,3 @@ const AdminCredential = () => {
         </div>
     )
 }
-
-export default AdminCredential

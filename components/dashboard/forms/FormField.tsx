@@ -1,13 +1,12 @@
 "use client";
 
-import { ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 import { FieldError } from "react-hook-form";
 
 interface FormFieldProps {
     label: string;
     error?: FieldError;
-    children: ReactNode;
+    children: React.ReactNode;
     className?: string;
 }
 

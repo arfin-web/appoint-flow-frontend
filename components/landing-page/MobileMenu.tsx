@@ -3,9 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { Button } from "../ui/button";
+import { UserButton, useUser } from '@clerk/nextjs'
 
 export function MobileMenu() {
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useUser()
 
     return (
         <>
@@ -34,13 +37,33 @@ export function MobileMenu() {
                             How it Works
                         </Link>
                         <Link
-                            href="#pricing"
+                            href="#testimonials"
                             className="text-lg font-medium"
                             onClick={() => setIsOpen(false)}
                         >
-                            Pricing
+                            Testimonials
                         </Link>
                         <hr className="border-border" />
+                        <div className="flex flex-col gap-4">
+                            {
+                                user ? (
+                                    <UserButton />
+                                ) : (
+                                    <>
+                                        <Button variant="ghost" size="sm" asChild>
+                                            <Link href="/sign-in">
+                                                Log in
+                                            </Link>
+                                        </Button>
+                                        <Button size="sm" className="rounded-full px-6" asChild>
+                                            <Link href="/sign-up">
+                                                Get Started
+                                            </Link>
+                                        </Button>
+                                    </>
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             ) : null}

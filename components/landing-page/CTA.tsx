@@ -28,7 +28,7 @@ export function CTA() {
                         </Button>
                     </Link>
                     <Tooltip>
-                        <TooltipTrigger type="button" className="flex items-center gap-2 h-12 px-8 border border-primary/20 rounded-full text-base w-full sm:w-auto">
+                        <TooltipTrigger type="button" className="flex justify-center items-center gap-2 h-12 px-8 border border-primary/20 rounded-full text-base w-full sm:w-auto">
                             <Phone className="w-5 h-5" />
                             Talk to Sales
                         </TooltipTrigger>

@@ -1,4 +1,4 @@
-import AdminCredential from '@/components/landing-page/AdminCredential'
+import { AdminCredential } from '@/components/landing-page/AdminCredential'
 import { Footer } from '@/components/landing-page/Footer'
 import { Navbar } from '@/components/landing-page/Navbar'
 import { SignIn } from '@clerk/nextjs'

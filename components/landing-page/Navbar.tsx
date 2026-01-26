@@ -43,7 +43,7 @@ export async function Navbar({ isLanding = true }: NavbarProps) {
             </div>
           ) : null}
 
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             {
               user ? (
                 <UserButton />
