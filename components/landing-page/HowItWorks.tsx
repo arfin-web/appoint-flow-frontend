@@ -1,3 +1,5 @@
+import { ContainerWrapper } from "./ContainerWrapper";
+
 const steps = [
     {
         number: "01",
@@ -19,7 +21,7 @@ const steps = [
 export function HowItWorks() {
     return (
         <section id="how-it-works" className="py-24 bg-background">
-            <div className="container mx-auto px-4 md:px-6">
+            <ContainerWrapper>
                 <div className="flex flex-col md:flex-row gap-12 items-center">
                     <div className="flex-1">
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">How it works</h2>
@@ -59,7 +61,7 @@ export function HowItWorks() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </ContainerWrapper>
         </section>
     );
 }

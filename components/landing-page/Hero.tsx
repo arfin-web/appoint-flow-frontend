@@ -7,6 +7,7 @@ import {
 import { ArrowRight, Play, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { DashboardPreview } from "./DashboardPreview";
+import { ContainerWrapper } from "./ContainerWrapper";
 
 export function Hero() {
     return (
@@ -17,7 +18,7 @@ export function Hero() {
                 <div className="absolute bottom-[10%] right-[-10%] w-[35%] h-[35%] bg-blue-500/20 blur-[120px] rounded-full" />
             </div>
 
-            <div className="container mx-auto px-4 md:px-6">
+            <ContainerWrapper>
                 <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary mb-6 animate-pulse">
                         <span className="text-xs font-bold uppercase tracking-wider">New</span>
@@ -69,7 +70,7 @@ export function Hero() {
                 </div>
 
                 <DashboardPreview />
-            </div>
+            </ContainerWrapper>
         </section>
     );
 }

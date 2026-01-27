@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/tooltip"
 import { ArrowRight, Phone } from "lucide-react";
 import Link from "next/link";
+import { ContainerWrapper } from "./ContainerWrapper";
 
 export function CTA() {
     return (
@@ -13,7 +14,7 @@ export function CTA() {
             <div className="absolute inset-0 bg-primary/5 -z-10" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] rounded-full -z-10" />
 
-            <div className="container mx-auto px-4 md:px-6 text-center">
+            <ContainerWrapper className="text-center">
                 <h2 className="text-3xl md:text-6xl font-extrabold mb-8 tracking-tighter">
                     Ready to transform your <br /> appointment workflow?
                 </h2>
@@ -37,7 +38,7 @@ export function CTA() {
                         </TooltipContent>
                     </Tooltip>
                 </div>
-            </div>
+            </ContainerWrapper>
         </section>
     );
 }

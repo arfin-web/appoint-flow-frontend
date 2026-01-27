@@ -1,5 +1,6 @@
 import { Quote, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ContainerWrapper } from "./ContainerWrapper";
 
 const testimonials = [
     {
@@ -53,7 +54,7 @@ export function Testimonials() {
             <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
             <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
 
-            <div className="container mx-auto px-4 md:px-6">
+            <ContainerWrapper>
                 <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Trusted by Businesses Across Bangladesh</h2>
                     <p className="text-muted-foreground text-lg">
@@ -97,7 +98,7 @@ export function Testimonials() {
                         </div>
                     ))}
                 </div>
-            </div>
+            </ContainerWrapper>
         </section>
     );
 }

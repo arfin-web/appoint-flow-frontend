@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Zap, Bell, Clock, ShieldCheck, BarChart3 } from "lucide-react";
+import { ContainerWrapper } from "./ContainerWrapper";
 
 const features = [
     {
@@ -43,7 +44,7 @@ const features = [
 export function Features() {
     return (
         <section id="features" className="py-24 bg-muted/30">
-            <div className="container mx-auto px-4 md:px-6">
+            <ContainerWrapper>
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Everything you need to <br /> manage your flow</h2>
                     <p className="text-lg text-muted-foreground">
@@ -66,7 +67,7 @@ export function Features() {
                         </Card>
                     ))}
                 </div>
-            </div>
+            </ContainerWrapper>
         </section>
     );
 }
