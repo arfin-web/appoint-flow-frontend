@@ -1,37 +1,24 @@
 import { CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 export function DashboardPreview() {
     return (
         <>
             {/* Dashboard Preview / Visual element */}
             <div className="mt-16 md:mt-24 relative max-w-6xl mx-auto">
-                <div className="relative rounded-2xl border border-border bg-card shadow-2xl overflow-hidden aspect-video group">
-                    <div className="absolute inset-0 bg-linear-to-tr from-primary/5 to-transparent opacity-50" />
+                <div className="relative rounded-3xl border border-primary/20 bg-card shadow-[0_0_50px_-12px_rgba(var(--primary),0.3)] overflow-hidden aspect-video group">
+                    <div className="absolute inset-0 bg-linear-to-tr from-primary/10 to-transparent opacity-50 z-10 pointer-events-none" />
 
-                    {/* Mock Dashboard UI Elements */}
-                    <div className="absolute top-0 left-0 w-full h-full p-4 md:p-8 flex flex-col gap-6">
-                        <div className="flex items-center justify-between border-b pb-4">
-                            <div className="flex gap-2">
-                                <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                                <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                            </div>
-                            <div className="w-32 h-6 bg-muted rounded-md" />
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-6">
-                            <div className="h-40 bg-muted/40 rounded-xl" />
-                            <div className="h-40 bg-muted/40 rounded-xl" />
-                            <div className="h-40 bg-muted/40 rounded-xl" />
-                        </div>
-
-                        <div className="flex-1 bg-muted/20 rounded-xl flex items-center justify-center border-2 border-dashed border-border">
-                            <span className="text-muted-foreground font-medium opacity-20 text-4xl">Real-time Dashboard Preview</span>
-                        </div>
-                    </div>
+                    <Image
+                        src="/dashboard.png"
+                        alt="AppointFlow Dashboard Preview"
+                        fill
+                        className="object-cover object-top"
+                        priority
+                    />
 
                     {/* Overlay Gradient to blend with background */}
-                    <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-40 z-10 pointer-events-none" />
                 </div>
 
                 {/* Floating badges */}
