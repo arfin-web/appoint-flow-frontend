@@ -2,6 +2,14 @@
 
 AppointFlow is a high-performance, modern appointment and queue management system built with **Next.js 16**, **React 19**, and **Tailwind CSS 4**. This document explores the architectural decisions, technical reasoning, and design patterns that make the application scalable, maintainable, and efficient.
 
+### 🚀 Key Features
+- **Smart Appointment Scheduling**: Effortlessly manage and schedule business appointments with a modern UI.
+- **Queue Auto-Assignment**: Appointments are automatically assigned to available staff, optimizing waiting times.
+- **Real-time Dashboard**: Monitor activity logs, staff availability, and queue status in real-time.
+- **Conflict Prevention**: Advanced logic to prevent time conflicts and double bookings.
+- **Staff Workload Tracking**: Dynamically track and manage staff availability and individual workloads.
+- **Modern Tech Stack**: Built with Next.js 16, React 19, Clerk Auth, and Tailwind CSS 4 for peak performance.
+
 ---
 
 ## 🏗️ Architecture & Philosophy
